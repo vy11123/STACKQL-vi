@@ -1,5 +1,7 @@
-# Nguồn:
-[ACID_and_GC.md](https://github.com/stackql/stackql/blob/main/docs/ACID_and_GC.md)
+# Bản dịch
+- Đây là bản dịch file:[ACID_and_GC.md](https://github.com/stackql/stackql/blob/main/docs/ACID_and_GC.md) thuộc dự án [StackQL](https://github.com/stackql/stackql).
+- Mục đích: Hỗ trợ người Việt Nam có thể hiểu rõ hơn về StackQL.
+- Tài liệu chỉ mang tính chất tham khảo, có thể sai sót trong quá trình biên dịch, rất mong được góp ý để có thể cả thiện hơn.
 
 
 # Thu Gom Bộ Nhớ, Bộ Nhớ Đệm, Xử Lý Đồng Thời và Giao Diện Hiển Thị
@@ -62,7 +64,7 @@ stackql ... --namespaces="${NAMESPACES}" ... shell
 
 - [Tổng quan cấp cao về MVCC trong Postgres](https://devcenter.heroku.com/articles/postgresql-concurrency#:~:text=a%20hard%20problem.-,How%20MVCC%20works,statements%20together%20via%20BEGIN%20%2D%20COMMIT%20). Một số điểm thú vị từ bài viết này:
     - Các bộ đếm `t_xmin` và `t_xmax` có thể được quan sát thông qua truy vấn rõ ràng; `SELECT *, xmin, xmax FROM table_name`.
-    - - ID giao dịch cũng có thể được truy xuất; `SELECT txid_current();`.
+    - ID giao dịch cũng có thể được truy xuất; `SELECT txid_current();`.
 - [Tài liệu chính thức về MVCC của Postgres](https://www.postgresql.org/docs/current/mvcc.html) 
 - [Tài liệu chính thức về VACUUM và xử lý tràn ID của Postgres](https://www.postgresql.org/docs/current/routine-vacuuming.html)
 
@@ -88,7 +90,7 @@ Các giao dịch `phantom` Txns tồn tại lâu hoặc không hoạt động ph
 
 Vì vậy, một cách tiếp cận hợp lý cho `phiên bản v1` về xử lý đồng thời và thu gom rác (GC) trong `stackql` là:
 
-- - Txn ID, như có thể được yêu cầu trong nhiều khía cạnh của hệ thống, là một bộ đếm tăng đơn điệu. Cách triển khai được chọn là kiểu số nguyên có kích thước cố định, hoạt động như một vòng lặp và được đặt lại định kỳ về 0. **Cập nhật**: - điều này sẽ được triển khai ở tầng backend của cơ sở dữ liệu, thông qua SQL. **TBD (Chưa hoàn thiện)**: - logic đặt lại về 0 vẫn chưa được triển khai ở giai đoạn *alpha* ban đầu này.  
+- Txn ID, như có thể được yêu cầu trong nhiều khía cạnh của hệ thống, là một bộ đếm tăng đơn điệu. Cách triển khai được chọn là kiểu số nguyên có kích thước cố định, hoạt động như một vòng lặp và được đặt lại định kỳ về 0. **Cập nhật**: - điều này sẽ được triển khai ở tầng backend của cơ sở dữ liệu, thông qua SQL. **TBD (Chưa hoàn thiện)**: - logic đặt lại về 0 vẫn chưa được triển khai ở giai đoạn *alpha* ban đầu này.  
 - Một danh sách toàn cục các bộ dữ liệu (Txn ID, thời điểm bắt đầu) đang hoạt động phải được duy trì. `txn_running_min_id` - có thể được suy ra từ danh sách này. Cách làm này tương tự như Postgres.  **TBD (Chưa hoàn thiện)**: - kho lưu trữ Txn ID đã hoàn thành, tuy nhiên các timestamp vẫn chưa được lưu lại, vì vậy các giao dịch cũ hiện đang bị ẩn.
 - Giai đoạn `acquire` (ghi vào DB sau khi gọi REST hoặc đọc từ cache) phải cập nhật `txn_max_id` bằng logic SQL có điều kiện (chỉ cập nhật nếu giá trị mới lớn hơn giá trị hiện tại).
 - **TBD (Chưa hoàn thiện)**: Các chu kỳ thu gom rác (GC) sẽ được kích hoạt bởi:
@@ -100,7 +102,7 @@ Vì vậy, một cách tiếp cận hợp lý cho `phiên bản v1` về xử l�
   - **Giả thuyết**: Các giao dịch hiện tại có thể ở trạng thái không hoạt động.
   - Nếu có quá nhiều giao dịch đang hoạt động và/hoặc một số đã quá cũ, thì cần hủy các giao dịch bất thường.
   - Nếu `txn_running_min_id` > `txn_max_id` thì cần hủy bản ghi tương ứng. Các hoạt động quản trị cần được hỗ trợ:
-    - - Can thiệp xóa bỏ giao dịch và bản ghi. Tính năng này có thể thực hiện thông qua cú pháp `PURGE`.
+    - Can thiệp xóa bỏ giao dịch và bản ghi. Tính năng này có thể thực hiện thông qua cú pháp `PURGE`.
 - **TBD (Chưa hoàn thiện)**: Cần triển khai các luồng xử lý có thể bị gián đoạn trước (pre-emptible handler threads).
 
 
