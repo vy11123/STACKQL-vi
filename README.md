@@ -38,7 +38,7 @@
 [discussions]: https://github.com/orgs/stackql/discussions
 <!-- repo assets -->
 [darkmodeterm]: /docs/images/stackql-light-term.gif#gh-dark-mode-only
-[lightmodeterm]: /docs/images/stackql-dark-term.gif#gh-light-mode-only
+[lightmodeterm]: /img/stackql-dark-term.gif#gh-light-mode-only
 <!-- misc links -->
 [twitter]: https://twitter.com/stackql
 
